@@ -1,10 +1,10 @@
 .. _contrib_starlette:
 
 ==================================
-Tortoise-ORM Starlette integration
+tortoise-plus Starlette integration
 ==================================
 
-We have a lightweight integration util ``tortoise.contrib.starlette`` which has a single function ``register_tortoise`` which sets up Tortoise-ORM on startup and cleans up on teardown.
+We have a lightweight integration util ``tortoise.contrib.starlette`` which has a single function ``register_tortoise`` which sets up tortoise-plus on startup and cleans up on teardown.
 
 See the :ref:`example_starlette`
 

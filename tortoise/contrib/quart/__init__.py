@@ -20,7 +20,7 @@ def register_tortoise(
     generate_schemas: bool = False,
 ) -> None:
     """
-    Registers ``before_serving`` and ``after_serving`` hooks to set-up and tear-down Tortoise-ORM
+    Registers ``before_serving`` and ``after_serving`` hooks to set-up and tear-down tortoise-plus
     inside a Quart service.
     It also registers a CLI command ``generate_schemas`` that will generate the schemas.
 
@@ -86,24 +86,22 @@ def register_tortoise(
     @app.before_serving
     async def init_orm() -> None:  # pylint: disable=W0612
         await Tortoise.init(config=config, config_file=config_file, db_url=db_url, modules=modules)
-        logger.info("Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps)
+        logger.info("tortoise-plus started, %s, %s", connections._get_storage(), Tortoise.apps)
         if _generate_schemas:
-            logger.info("Tortoise-ORM generating schema")
+            logger.info("tortoise-plus generating schema")
             await Tortoise.generate_schemas()
 
     @app.after_serving
     async def close_orm() -> None:  # pylint: disable=W0612
         await connections.close_all()
-        logger.info("Tortoise-ORM shutdown")
+        logger.info("tortoise-plus shutdown")
 
     @app.cli.command()  # type: ignore
     def generate_schemas() -> None:  # pylint: disable=E0102
-        """Populate DB with Tortoise-ORM schemas."""
+        """Populate DB with tortoise-plus schemas."""
 
         async def inner() -> None:
-            await Tortoise.init(
-                config=config, config_file=config_file, db_url=db_url, modules=modules
-            )
+            await Tortoise.init(config=config, config_file=config_file, db_url=db_url, modules=modules)
             await Tortoise.generate_schemas()
             await connections.close_all()
 

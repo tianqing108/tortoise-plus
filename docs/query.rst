@@ -6,7 +6,7 @@ Query API
 
 This document describes how to use QuerySet to query the database.
 
-Be sure to check `examples <https://github.com/tortoise/tortoise-orm/tree/master/examples>`_.
+Be sure to check `examples <https://github.com/tortoise/tortoise-plus/tree/master/examples>`_.
 
 Below is an example of a simple query that will return all events with a rating greater than 5:
 
@@ -146,7 +146,7 @@ QuerySet also supports aggregation and database functions through ``.annotate()`
     await Tournament.annotate(name_lower=Lower('name')).filter(name_lower='tournament')
     await Tournament.annotate(desc_clean=Coalesce('desc', '')).filter(desc_clean='')
 
-Check `examples <https://github.com/tortoise/tortoise-orm/tree/master/examples>`_ to see it all in work
+Check `examples <https://github.com/tortoise/tortoise-plus/tree/master/examples>`_ to see it all in work
 
 .. _foreign_key:
 

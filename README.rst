@@ -2,18 +2,18 @@
 Tortoise ORM
 ============
 
-.. image:: https://img.shields.io/pypi/v/tortoise-orm.svg?style=flat
-   :target: https://pypi.python.org/pypi/tortoise-orm
-.. image:: https://pepy.tech/badge/tortoise-orm/month
-   :target: https://pepy.tech/project/tortoise-orm
-.. image:: https://github.com/tortoise/tortoise-orm/workflows/gh-pages/badge.svg
-   :target: https://github.com/tortoise/tortoise-orm/actions?query=workflow:gh-pages
-.. image:: https://github.com/tortoise/tortoise-orm/actions/workflows/ci.yml/badge.svg?branch=develop
-   :target: https://github.com/tortoise/tortoise-orm/actions?query=workflow:ci
-.. image:: https://coveralls.io/repos/github/tortoise/tortoise-orm/badge.svg
-   :target: https://coveralls.io/github/tortoise/tortoise-orm
+.. image:: https://img.shields.io/pypi/v/tortoise-plus.svg?style=flat
+   :target: https://pypi.python.org/pypi/tortoise-plus
+.. image:: https://pepy.tech/badge/tortoise-plus/month
+   :target: https://pepy.tech/project/tortoise-plus
+.. image:: https://github.com/tortoise/tortoise-plus/workflows/gh-pages/badge.svg
+   :target: https://github.com/tortoise/tortoise-plus/actions?query=workflow:gh-pages
+.. image:: https://github.com/tortoise/tortoise-plus/actions/workflows/ci.yml/badge.svg?branch=develop
+   :target: https://github.com/tortoise/tortoise-plus/actions?query=workflow:ci
+.. image:: https://coveralls.io/repos/github/tortoise/tortoise-plus/badge.svg
+   :target: https://coveralls.io/github/tortoise/tortoise-plus
 .. image:: https://app.codacy.com/project/badge/Grade/844030d0cb8240d6af92c71bfac764ff
-   :target: https://www.codacy.com/gh/tortoise/tortoise-orm/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tortoise/tortoise-orm&amp;utm_campaign=Badge_Grade
+   :target: https://www.codacy.com/gh/tortoise/tortoise-plus/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tortoise/tortoise-plus&amp;utm_campaign=Badge_Grade
 
 Introduction
 ============
@@ -35,7 +35,7 @@ Tortoise ORM was built to provide a lightweight, async-native Object-Relational 
 
 Tortoise ORM performs well when compared to other Python ORMs. In `our benchmarks <https://github.com/tortoise/orm-benchmarks>`_, where we measure different read and write operations (rows/sec, more is better), it's trading places with Pony ORM:
 
-.. image:: https://raw.githubusercontent.com/tortoise/tortoise-orm/develop/docs/ORM_Perf.png
+.. image:: https://raw.githubusercontent.com/tortoise/tortoise-plus/develop/docs/ORM_Perf.png
     :target: https://github.com/tortoise/orm-benchmarks
 
 How is an ORM useful?
@@ -63,19 +63,19 @@ The following table shows the available installation options for different datab
    * - Database
      - Installation Command
    * - SQLite
-     - ``pip install tortoise-orm``
+     - ``pip install tortoise-plus``
    * - PostgreSQL (psycopg)
-     - ``pip install tortoise-orm[psycopg]``
+     - ``pip install tortoise-plus[psycopg]``
    * - PostgreSQL (asyncpg)
-     - ``pip install tortoise-orm[asyncpg]``
+     - ``pip install tortoise-plus[asyncpg]``
    * - MySQL (aiomysql)
-     - ``pip install tortoise-orm[aiomysql]``
+     - ``pip install tortoise-plus[aiomysql]``
    * - MySQL (asyncmy)
-     - ``pip install tortoise-orm[asyncmy]``
+     - ``pip install tortoise-plus[asyncmy]``
    * - MS SQL
-     - ``pip install tortoise-orm[asyncodbc]``
+     - ``pip install tortoise-plus[asyncodbc]``
    * - Oracle
-     - ``pip install tortoise-orm[asyncodbc]``
+     - ``pip install tortoise-plus[asyncodbc]``
 
 
 Quick Tutorial

@@ -30,7 +30,7 @@ def now() -> datetime:
     if get_use_tz():
         return datetime.now(tz=pytz.utc)
     else:
-        return datetime.now(get_default_timezone())
+        return datetime.now()
 
 
 @functools.cache
@@ -96,9 +96,7 @@ def is_naive(value: datetime | time) -> bool:
     return value.utcoffset() is None
 
 
-def make_aware(
-    value: datetime, timezone: str | None = None, is_dst: bool | None = None
-) -> datetime:
+def make_aware(value: datetime, timezone: str | None = None, is_dst: bool | None = None) -> datetime:
     """
     Make a naive datetime.datetime in a given time zone aware.
 

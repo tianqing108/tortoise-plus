@@ -47,15 +47,11 @@ class TestRelations(test.TestCase):
         teamids = [team.id async for team in event.participants]
         self.assertEqual(set(teamids), {participants[0].id, participants[1].id})
 
-        self.assertEqual(
-            {team.id for team in event.participants}, {participants[0].id, participants[1].id}
-        )
+        self.assertEqual({team.id for team in event.participants}, {participants[0].id, participants[1].id})
 
         self.assertIn(event.participants[0].id, {participants[0].id, participants[1].id})
 
-        selected_events = await Event.filter(participants=participants[0].id).prefetch_related(
-            "participants", "tournament"
-        )
+        selected_events = await Event.filter(participants=participants[0].id).prefetch_related("participants", "tournament")
         self.assertEqual(len(selected_events), 1)
         self.assertEqual(selected_events[0].tournament.id, tournament.id)
         self.assertEqual(len(selected_events[0].participants), 2)
@@ -70,9 +66,7 @@ class TestRelations(test.TestCase):
 
         await Tournament.filter(events__name__in=["Test", "Prod"]).distinct()
 
-        result = await Event.filter(pk=event.pk).values(
-            "event_id", "name", tournament="tournament__name"
-        )
+        result = await Event.filter(pk=event.pk).values("event_id", "name", tournament="tournament__name")
         self.assertEqual(result[0]["tournament"], tournament.name)
 
         result = await Event.filter(pk=event.pk).values_list("event_id", "participants__name")
@@ -299,12 +293,7 @@ class TestRelations(test.TestCase):
         tournament = await Tournament.create(name="New Tournament")
         reporter = await Reporter.create(name="Reporter")
         event = await Event.create(name="With reporter", tournament=tournament, reporter=reporter)
-        event = (
-            await Event.filter(pk=event.pk)
-            .select_related("reporter")
-            .annotate(tournament_name=Trim("tournament__name"))
-            .first()
-        )
+        event = await Event.filter(pk=event.pk).select_related("reporter").annotate(tournament_name=Trim("tournament__name")).first()
         self.assertEqual(event.reporter, reporter)
         self.assertTrue(hasattr(event, "tournament_name"))
         self.assertEqual(event.tournament_name, tournament.name)
@@ -313,9 +302,7 @@ class TestRelations(test.TestCase):
         """Test that select related yields null for fields with nulled fk cols."""
         related_dude = await UUIDFkRelatedNullModel.create(name="Some model")
         await related_dude.fetch_related("parent")  # that is strange :)
-        related_dude_fresh = (
-            await UUIDFkRelatedNullModel.all().select_related("parent").get(id=related_dude.id)
-        )
+        related_dude_fresh = await UUIDFkRelatedNullModel.all().select_related("parent").get(id=related_dude.id)
         self.assertIsNone(related_dude_fresh.parent)
         self.assertEqual(related_dude_fresh.parent, related_dude.parent)
 
@@ -325,9 +312,7 @@ class TestRelations(test.TestCase):
         left_1st_lvl = await DoubleFK.create(name="1st", left=left_2nd_lvl)
         root = await DoubleFK.create(name="root", left=left_1st_lvl)
 
-        retrieved_root = (
-            await DoubleFK.all().select_related("left__left__left", "right").get(id=root.pk)
-        )
+        retrieved_root = await DoubleFK.all().select_related("left__left__left", "right").get(id=root.pk)
         self.assertIsNone(retrieved_root.right)
         assert retrieved_root.left is not None
         self.assertEqual(retrieved_root.left, left_1st_lvl)
@@ -338,32 +323,24 @@ class TestRelations(test.TestCase):
 
         The idea was that on the moment of writing this feature, there were no way to correctly set attributes for
         select_related fields attributes.
-        src: https://github.com/tortoise/tortoise-orm/pull/826#issuecomment-883341557
+        src: https://github.com/tortoise/tortoise-plus/pull/826#issuecomment-883341557
         """
 
         extra = await Extra.create()
         single = await Single.create(extra=extra)
         await Pair.create(right=single)
-        pair = (
-            await Pair.filter(id=1)
-            .select_related("left", "left__extra", "right", "right__extra")
-            .get()
-        )
+        pair = await Pair.filter(id=1).select_related("left", "left__extra", "right", "right__extra").get()
         self.assertIsNone(pair.left)
         self.assertEqual(pair.right.extra, extra)
         single = await Single.create()
         await Pair.create(right=single)
-        pair = (
-            await Pair.filter(id=2)
-            .select_related("left", "left__extra", "right", "right__extra")
-            .get()
-        )
+        pair = await Pair.filter(id=2).select_related("left", "left__extra", "right", "right__extra").get()
         self.assertIsNone(pair.right.extra)  # should be None
 
     @test.requireCapability(dialect=NotIn("mssql", "mysql"))
     async def test_0_value_fk(self):
         """ForegnKeyField should exits even if the the source_field looks like false, but not None
-        src: https://github.com/tortoise/tortoise-orm/issues/1274
+        src: https://github.com/tortoise/tortoise-plus/issues/1274
         """
         extra = await Extra.create(id=0)
         single = await Single.create(extra=extra)
@@ -450,9 +427,7 @@ class TestDoubleFK(test.TestCase):
         self.assertEqual(result, [{"name": "middle"}])
 
     async def test_doublefk_filter_both_values_rel(self):
-        qset = DoubleFK.filter(left__name="one", right__name="two").values(
-            "name", "left__name", "right__name"
-        )
+        qset = DoubleFK.filter(left__name="one", right__name="two").values("name", "left__name", "right__name")
         result = await qset
         query = qset.query.get_sql()
 

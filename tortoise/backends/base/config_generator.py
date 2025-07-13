@@ -70,6 +70,17 @@ DB_LOOKUP: dict[str, dict[str, Any]] = {
             "install_regexp_functions": bool,
         },
     },
+    "sqlcipher": {
+        "engine": "tortoise.backends.sqlcipher",
+        "skip_first_char": False,
+        "vmap": {"path": "file_path"},
+        "defaults": {"journal_mode": "WAL", "journal_size_limit": 16384},
+        "cast": {
+            "journal_size_limit": int,
+            "install_regexp_functions": bool,
+            "key": str,
+        },
+    },
     "mysql": {
         "engine": "tortoise.backends.mysql",
         "vmap": {
@@ -174,11 +185,7 @@ def expand_db_url(db_url: str, testing: bool = False) -> dict:
         params[vmap["username"]] = url.username or None
     if vmap.get("password"):
         # asyncpg accepts None for password, but aiomysql not
-        params[vmap["password"]] = (
-            None
-            if (not url.password and db_backend in {"postgres", "asyncpg", "psycopg"})
-            else urlparse.unquote_plus(url.password or "")
-        )
+        params[vmap["password"]] = None if (not url.password and db_backend in {"postgres", "asyncpg", "psycopg"}) else urlparse.unquote_plus(url.password or "")
 
     return {"engine": db["engine"], "credentials": params}
 
@@ -192,8 +199,5 @@ def generate_config(
     _connection_label = connection_label or "default"
     return {
         "connections": {_connection_label: expand_db_url(db_url, testing)},
-        "apps": {
-            app_label: {"models": modules, "default_connection": _connection_label}
-            for app_label, modules in app_modules.items()
-        },
+        "apps": {app_label: {"models": modules, "default_connection": _connection_label} for app_label, modules in app_modules.items()},
     }

@@ -4,7 +4,7 @@
 TortoiseCLI
 ===========
 
-This document describes how to use `tortoise-cli`, a cli tool for tortoise-orm, build on top of click and ptpython.
+This document describes how to use `tortoise-cli`, a cli tool for tortoise-plus, build on top of click and ptpython.
 
 You can see `https://github.com/tortoise/tortoise-cli <https://github.com/tortoise/tortoise-cli>`_ for more details.
 

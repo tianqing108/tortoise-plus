@@ -52,18 +52,14 @@ class Author(Model):
 
 class Book(Model):
     name = fields.CharField(max_length=255)
-    author: fields.ForeignKeyRelation[Author] = fields.ForeignKeyField(
-        "models.Author", related_name="books"
-    )
+    author: fields.ForeignKeyRelation[Author] = fields.ForeignKeyField("models.Author", related_name="books")
     rating = fields.FloatField()
     subject = fields.CharField(max_length=255, null=True)
 
 
 class BookNoConstraint(Model):
     name = fields.CharField(max_length=255)
-    author: fields.ForeignKeyRelation[Author] = fields.ForeignKeyField(
-        "models.Author", db_constraint=False
-    )
+    author: fields.ForeignKeyRelation[Author] = fields.ForeignKeyField("models.Author", db_constraint=False)
     rating = fields.FloatField()
 
 
@@ -106,12 +102,8 @@ class Event(Model):
     #: The name
     name = fields.TextField()
     #: What tournaments is a happenin'
-    tournament: fields.ForeignKeyRelation[Tournament] = fields.ForeignKeyField(
-        "models.Tournament", related_name="events"
-    )
-    reporter: fields.ForeignKeyNullableRelation[Reporter] = fields.ForeignKeyField(
-        "models.Reporter", null=True
-    )
+    tournament: fields.ForeignKeyRelation[Tournament] = fields.ForeignKeyField("models.Tournament", related_name="events")
+    reporter: fields.ForeignKeyNullableRelation[Reporter] = fields.ForeignKeyField("models.Reporter", null=True)
     participants: fields.ManyToManyRelation[Team] = fields.ManyToManyField(
         "models.Team",
         related_name="events",
@@ -138,16 +130,8 @@ class ModelTestPydanticMetaBackwardRelations2(Model): ...
 
 
 class ModelTestPydanticMetaBackwardRelations3(Model):
-    one: fields.ForeignKeyRelation[ModelTestPydanticMetaBackwardRelations1] = (
-        fields.ForeignKeyField(
-            "models.ModelTestPydanticMetaBackwardRelations1", related_name="threes"
-        )
-    )
-    two: fields.ForeignKeyRelation[ModelTestPydanticMetaBackwardRelations2] = (
-        fields.ForeignKeyField(
-            "models.ModelTestPydanticMetaBackwardRelations2", related_name="threes"
-        )
-    )
+    one: fields.ForeignKeyRelation[ModelTestPydanticMetaBackwardRelations1] = fields.ForeignKeyField("models.ModelTestPydanticMetaBackwardRelations1", related_name="threes")
+    two: fields.ForeignKeyRelation[ModelTestPydanticMetaBackwardRelations2] = fields.ForeignKeyField("models.ModelTestPydanticMetaBackwardRelations2", related_name="threes")
 
 
 class Node(Model):
@@ -155,12 +139,8 @@ class Node(Model):
 
 
 class Tree(Model):
-    parent: fields.ForeignKeyRelation[Node] = fields.ForeignKeyField(
-        "models.Node", related_name="parent_trees"
-    )
-    child: fields.ForeignKeyRelation[Node] = fields.ForeignKeyField(
-        "models.Node", related_name="children_trees", on_delete=NO_ACTION
-    )
+    parent: fields.ForeignKeyRelation[Node] = fields.ForeignKeyField("models.Node", related_name="parent_trees")
+    child: fields.ForeignKeyRelation[Node] = fields.ForeignKeyField("models.Node", related_name="children_trees", on_delete=NO_ACTION)
 
 
 class Address(Model):
@@ -349,14 +329,10 @@ class JSONFields(Model):
     data_default = fields.JSONField[dict](default={"a": 1})
 
     # From Python 3.10 onwards, validator can be defined with staticmethod
-    data_validate = fields.JSONField[Union[dict, list]](
-        null=True, validators=[raise_if_not_dict_or_list]
-    )
+    data_validate = fields.JSONField[Union[dict, list]](null=True, validators=[raise_if_not_dict_or_list])
 
     # Test cases where generics are provided and the type is a pydantic base model
-    data_pydantic = fields.JSONField[TestSchemaForJSONField](
-        default=json_pydantic_default, field_type=TestSchemaForJSONField
-    )
+    data_pydantic = fields.JSONField[TestSchemaForJSONField](default=json_pydantic_default, field_type=TestSchemaForJSONField)
 
 
 class UUIDFields(Model):
@@ -375,9 +351,7 @@ class MinRelation(Model):
 class M2MOne(Model):
     id = fields.IntField(primary_key=True)
     name = fields.CharField(max_length=255, null=True)
-    two: fields.ManyToManyRelation[M2MTwo] = fields.ManyToManyField(
-        "models.M2MTwo", related_name="one"
-    )
+    two: fields.ManyToManyRelation[M2MTwo] = fields.ManyToManyField("models.M2MTwo", related_name="one")
 
 
 class M2MTwo(Model):
@@ -432,28 +406,20 @@ class UUIDPkModel(Model):
 class UUIDFkRelatedModel(Model):
     id = fields.UUIDField(primary_key=True)
     name = fields.CharField(max_length=50, null=True)
-    model: fields.ForeignKeyRelation[UUIDPkModel] = fields.ForeignKeyField(
-        "models.UUIDPkModel", related_name="children"
-    )
+    model: fields.ForeignKeyRelation[UUIDPkModel] = fields.ForeignKeyField("models.UUIDPkModel", related_name="children")
 
 
 class UUIDFkRelatedNullModel(Model):
     id = fields.UUIDField(primary_key=True)
     name = fields.CharField(max_length=50, null=True)
-    model: fields.ForeignKeyNullableRelation[UUIDPkModel] = fields.ForeignKeyField(
-        "models.UUIDPkModel", related_name=False, null=True
-    )
-    parent: fields.OneToOneNullableRelation[UUIDPkModel] = fields.OneToOneField(
-        "models.UUIDPkModel", related_name=False, null=True, on_delete=NO_ACTION
-    )
+    model: fields.ForeignKeyNullableRelation[UUIDPkModel] = fields.ForeignKeyField("models.UUIDPkModel", related_name=False, null=True)
+    parent: fields.OneToOneNullableRelation[UUIDPkModel] = fields.OneToOneField("models.UUIDPkModel", related_name=False, null=True, on_delete=NO_ACTION)
 
 
 class UUIDM2MRelatedModel(Model):
     id = fields.UUIDField(primary_key=True)
     value = fields.TextField(default="test")
-    models: fields.ManyToManyRelation[UUIDPkModel] = fields.ManyToManyField(
-        "models.UUIDPkModel", related_name="peers"
-    )
+    models: fields.ManyToManyRelation[UUIDPkModel] = fields.ManyToManyField("models.UUIDPkModel", related_name="peers")
 
 
 class UUIDPkSourceModel(Model):
@@ -466,9 +432,7 @@ class UUIDPkSourceModel(Model):
 class UUIDFkRelatedSourceModel(Model):
     id = fields.UUIDField(primary_key=True, source_field="b")
     name = fields.CharField(max_length=50, null=True, source_field="c")
-    model: fields.ForeignKeyRelation[UUIDPkSourceModel] = fields.ForeignKeyField(
-        "models.UUIDPkSourceModel", related_name="children", source_field="d"
-    )
+    model: fields.ForeignKeyRelation[UUIDPkSourceModel] = fields.ForeignKeyField("models.UUIDPkSourceModel", related_name="children", source_field="d")
 
     class Meta:
         table = "ufrsm"
@@ -507,16 +471,12 @@ class CharPkModel(Model):
 
 
 class CharFkRelatedModel(Model):
-    model: fields.ForeignKeyRelation[CharPkModel] = fields.ForeignKeyField(
-        "models.CharPkModel", related_name="children"
-    )
+    model: fields.ForeignKeyRelation[CharPkModel] = fields.ForeignKeyField("models.CharPkModel", related_name="children")
 
 
 class CharM2MRelatedModel(Model):
     value = fields.TextField(default="test")
-    models: fields.ManyToManyRelation[CharPkModel] = fields.ManyToManyField(
-        "models.CharPkModel", related_name="peers"
-    )
+    models: fields.ManyToManyRelation[CharPkModel] = fields.ManyToManyField("models.CharPkModel", related_name="peers")
 
 
 class TimestampMixin:
@@ -544,9 +504,7 @@ class CommentModel(Model):
         table = "comments"
         table_description = "Test Table comment"
 
-    id = fields.IntField(
-        primary_key=True, description="Primary key \r*/'`/*\n field for the comments"
-    )
+    id = fields.IntField(primary_key=True, description="Primary key \r*/'`/*\n field for the comments")
     message = fields.TextField(description="Comment messages entered in the blog post")
     rating = fields.IntField(description="Upvotes done on the comment")
     escaped_comment_field = fields.TextField(description="This column acts as it's own comment")
@@ -557,14 +515,10 @@ class CommentModel(Model):
 class Employee(Model):
     name = fields.CharField(max_length=50)
 
-    manager: fields.ForeignKeyNullableRelation[Employee] = fields.ForeignKeyField(
-        "models.Employee", related_name="team_members", null=True, on_delete=NO_ACTION
-    )
+    manager: fields.ForeignKeyNullableRelation[Employee] = fields.ForeignKeyField("models.Employee", related_name="team_members", null=True, on_delete=NO_ACTION)
     team_members: fields.ReverseRelation[Employee]
 
-    talks_to: fields.ManyToManyRelation[Employee] = fields.ManyToManyField(
-        "models.Employee", related_name="gets_talked_to", on_delete=NO_ACTION
-    )
+    talks_to: fields.ManyToManyRelation[Employee] = fields.ManyToManyField("models.Employee", related_name="gets_talked_to", on_delete=NO_ACTION)
     gets_talked_to: fields.ManyToManyRelation[Employee]
 
     def __str__(self):
@@ -756,12 +710,8 @@ class EnumFields(Model):
 
 class DoubleFK(Model):
     name = fields.CharField(max_length=50)
-    left: fields.ForeignKeyNullableRelation[DoubleFK] = fields.ForeignKeyField(
-        "models.DoubleFK", null=True, related_name="left_rel", on_delete=NO_ACTION
-    )
-    right: fields.ForeignKeyNullableRelation[DoubleFK] = fields.ForeignKeyField(
-        "models.DoubleFK", null=True, related_name="right_rel", on_delete=NO_ACTION
-    )
+    left: fields.ForeignKeyNullableRelation[DoubleFK] = fields.ForeignKeyField("models.DoubleFK", null=True, related_name="left_rel", on_delete=NO_ACTION)
+    right: fields.ForeignKeyNullableRelation[DoubleFK] = fields.ForeignKeyField("models.DoubleFK", null=True, related_name="right_rel", on_delete=NO_ACTION)
 
 
 class DefaultOrdered(Model):
@@ -773,9 +723,7 @@ class DefaultOrdered(Model):
 
 
 class FKToDefaultOrdered(Model):
-    link: fields.ForeignKeyRelation[DefaultOrdered] = fields.ForeignKeyField(
-        "models.DefaultOrdered", related_name="related"
-    )
+    link: fields.ForeignKeyRelation[DefaultOrdered] = fields.ForeignKeyField("models.DefaultOrdered", related_name="related")
     value = fields.IntField()
 
 
@@ -812,9 +760,7 @@ class School(Model):
 class Student(Model):
     id = fields.IntField(primary_key=True)
     name = fields.TextField()
-    school: fields.ForeignKeyRelation[School] = fields.ForeignKeyField(
-        "models.School", related_name="students", to_field="id"
-    )
+    school: fields.ForeignKeyRelation[School] = fields.ForeignKeyField("models.School", related_name="students", to_field="id")
 
 
 class Principal(Model):
@@ -844,9 +790,7 @@ class DefaultModel(Model):
     bool_default = fields.BooleanField(default=True)
     char_default = fields.CharField(max_length=20, default="tortoise")
     date_default = fields.DateField(default=datetime.date(year=2020, month=5, day=21))
-    datetime_default = fields.DatetimeField(
-        default=datetime.datetime(year=2020, month=5, day=20, tzinfo=pytz.utc)
-    )
+    datetime_default = fields.DatetimeField(default=datetime.datetime(year=2020, month=5, day=20, tzinfo=pytz.utc))
 
 
 class RequiredPKModel(Model):
@@ -873,9 +817,7 @@ class ValidatorModel(Model):
         null=True,
         validators=[MinValueValidator(Decimal("1.0"))],
     )
-    comma_separated_integer_list = fields.CharField(
-        max_length=100, null=True, validators=[CommaSeparatedIntegerListValidator()]
-    )
+    comma_separated_integer_list = fields.CharField(max_length=100, null=True, validators=[CommaSeparatedIntegerListValidator()])
 
 
 class NumberSourceField(Model):
@@ -923,7 +865,7 @@ class ManagerModelExtra(AbstractManagerModel):
 
 class Extra(Model):
     """Dumb model, has no fk.
-    src: https://github.com/tortoise/tortoise-orm/pull/826#issuecomment-883341557
+    src: https://github.com/tortoise/tortoise-plus/pull/826#issuecomment-883341557
     """
 
     id = fields.IntField(primary_key=True)
@@ -933,27 +875,21 @@ class Extra(Model):
 
 class Single(Model):
     """Dumb model, having single fk
-    src: https://github.com/tortoise/tortoise-orm/pull/826#issuecomment-883341557
+    src: https://github.com/tortoise/tortoise-plus/pull/826#issuecomment-883341557
     """
 
     id = fields.IntField(primary_key=True)
-    extra: fields.ForeignKeyNullableRelation[Extra] = fields.ForeignKeyField(
-        "models.Extra", related_name="singles", null=True
-    )
+    extra: fields.ForeignKeyNullableRelation[Extra] = fields.ForeignKeyField("models.Extra", related_name="singles", null=True)
 
 
 class Pair(Model):
     """Dumb model, having double fk
-    src: https://github.com/tortoise/tortoise-orm/pull/826#issuecomment-883341557
+    src: https://github.com/tortoise/tortoise-plus/pull/826#issuecomment-883341557
     """
 
     id = fields.IntField(primary_key=True)
-    left: fields.ForeignKeyNullableRelation[Single] = fields.ForeignKeyField(
-        "models.Single", related_name="lefts", null=True
-    )
-    right: fields.ForeignKeyNullableRelation[Single] = fields.ForeignKeyField(
-        "models.Single", related_name="rights", null=True, on_delete=NO_ACTION
-    )
+    left: fields.ForeignKeyNullableRelation[Single] = fields.ForeignKeyField("models.Single", related_name="lefts", null=True)
+    right: fields.ForeignKeyNullableRelation[Single] = fields.ForeignKeyField("models.Single", related_name="rights", null=True, on_delete=NO_ACTION)
 
 
 class OldStyleModel(Model):
@@ -1021,9 +957,7 @@ class BenchmarkManyFields(Model):
     col_char1 = fields.CharField(max_length=255, default="value1")
     col_text1 = fields.TextField(default="Moo,Foo,Baa,Waa,Moo,Foo,Baa,Waa,Moo,Foo,Baa,Waa")
     col_decimal1 = fields.DecimalField(12, 8, default=Decimal("2.2"))
-    col_json1 = fields.JSONField[dict](
-        default={"a": 1, "b": "b", "c": [2], "d": {"e": 3}, "f": True}
-    )
+    col_json1 = fields.JSONField[dict](default={"a": 1, "b": "b", "c": [2], "d": {"e": 3}, "f": True})
 
     col_float2 = fields.FloatField(null=True)
     col_smallint2 = fields.SmallIntField(null=True)
@@ -1041,9 +975,7 @@ class BenchmarkManyFields(Model):
     col_char3 = fields.CharField(max_length=255, default="value1")
     col_text3 = fields.TextField(default="Moo,Foo,Baa,Waa,Moo,Foo,Baa,Waa,Moo,Foo,Baa,Waa")
     col_decimal3 = fields.DecimalField(12, 8, default=Decimal("2.2"))
-    col_json3 = fields.JSONField[dict](
-        default={"a": 1, "b": "b", "c": [2], "d": {"e": 3}, "f": True}
-    )
+    col_json3 = fields.JSONField[dict](default={"a": 1, "b": "b", "c": [2], "d": {"e": 3}, "f": True})
 
     col_float4 = fields.FloatField(null=True)
     col_smallint4 = fields.SmallIntField(null=True)

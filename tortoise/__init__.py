@@ -52,9 +52,7 @@ class Tortoise:
         return connections.get(connection_name)
 
     @classmethod
-    def describe_model(
-        cls, model: type[Model], serializable: bool = True
-    ) -> dict[str, Any]:  # pragma: nocoverage
+    def describe_model(cls, model: type[Model], serializable: bool = True) -> dict[str, Any]:  # pragma: nocoverage
         """
         Describes the given list of models or ALL registered models.
 
@@ -78,9 +76,7 @@ class Tortoise:
         return model.describe(serializable=serializable)
 
     @classmethod
-    def describe_models(
-        cls, models: list[type[Model]] | None = None, serializable: bool = True
-    ) -> dict[str, dict[str, Any]]:
+    def describe_models(cls, models: list[type[Model]] | None = None, serializable: bool = True) -> dict[str, dict[str, Any]]:
         """
         Describes the given list of models or ALL registered models.
 
@@ -109,9 +105,7 @@ class Tortoise:
                 for model in app.values():
                     models.append(model)
 
-        return {
-            f"{model._meta.app}.{model.__name__}": model.describe(serializable) for model in models
-        }
+        return {f"{model._meta.app}.{model.__name__}": model.describe(serializable) for model in models}
 
     @classmethod
     def _init_relations(cls) -> None:
@@ -126,15 +120,8 @@ class Tortoise:
                 return cls.apps[related_app_name][related_model_name]
             except KeyError:
                 if related_app_name not in cls.apps:
-                    raise ConfigurationError(
-                        f"No app with name '{related_app_name}' registered."
-                        f" Please check your model names in ForeignKeyFields"
-                        f" and configurations."
-                    )
-                raise ConfigurationError(
-                    f"No model with name '{related_model_name}' registered in"
-                    f" app '{related_app_name}'."
-                )
+                    raise ConfigurationError(f"No app with name '{related_app_name}' registered. Please check your model names in ForeignKeyFields and configurations.")
+                raise ConfigurationError(f"No model with name '{related_model_name}' registered in app '{related_app_name}'.")
 
         def split_reference(reference: str) -> tuple[str, str]:
             """
@@ -145,29 +132,20 @@ class Tortoise:
             :raises ConfigurationError: If reference is invalid.
             """
             if len(items := reference.split(".")) != 2:  # pragma: nocoverage
-                raise ConfigurationError(
-                    f"'{reference}' is not a valid model reference Bad Reference."
-                    " Should be something like '<appname>.<modelname>'."
-                )
+                raise ConfigurationError(f"'{reference}' is not a valid model reference Bad Reference. Should be something like '<appname>.<modelname>'.")
             return items[0], items[1]
 
         def init_fk_o2o_field(model: type[Model], field: str, is_o2o=False) -> None:
-            fk_object = cast(
-                "OneToOneFieldInstance | ForeignKeyFieldInstance", model._meta.fields_map[field]
-            )
+            fk_object = cast("OneToOneFieldInstance | ForeignKeyFieldInstance", model._meta.fields_map[field])
             related_app_name, related_model_name = split_reference(fk_object.model_name)
             related_model = get_related_model(related_app_name, related_model_name)
 
             if to_field := fk_object.to_field:
                 related_field = related_model._meta.fields_map.get(to_field)
                 if not related_field:
-                    raise ConfigurationError(
-                        f'there is no field named "{to_field}" in model "{related_model_name}"'
-                    )
+                    raise ConfigurationError(f'there is no field named "{to_field}" in model "{related_model_name}"')
                 if not related_field.unique:
-                    raise ConfigurationError(
-                        f'field "{to_field}" in model "{related_model_name}" is not unique'
-                    )
+                    raise ConfigurationError(f'field "{to_field}" in model "{related_model_name}" is not unique')
             else:
                 fk_object.to_field = related_model._meta.pk_attr
                 related_field = related_model._meta.pk
@@ -193,10 +171,7 @@ class Tortoise:
                 if not backward_relation_name:
                     backward_relation_name = f"{model._meta.db_table}s"
                 if backward_relation_name in related_model._meta.fields:
-                    raise ConfigurationError(
-                        f'backward relation "{backward_relation_name}" duplicates in'
-                        f" model {related_model_name}"
-                    )
+                    raise ConfigurationError(f'backward relation "{backward_relation_name}" duplicates in model {related_model_name}')
 
                 fk_relation = (
                     BackwardOneToOneRelation(
@@ -226,11 +201,7 @@ class Tortoise:
                     continue
                 model._meta._inited = True
                 if not model._meta.db_table:
-                    model._meta.db_table = (
-                        cls.table_name_generator(model)
-                        if cls.table_name_generator
-                        else (model.__name__.lower())
-                    )
+                    model._meta.db_table = cls.table_name_generator(model) if cls.table_name_generator else (model.__name__.lower())
 
                 for field in sorted(model._meta.fk_fields):
                     init_fk_o2o_field(model, field)
@@ -255,19 +226,12 @@ class Tortoise:
                     m2m_object.related_model = related_model
 
                     if not (backward_relation_name := m2m_object.related_name):
-                        backward_relation_name = m2m_object.related_name = (
-                            f"{model._meta.db_table}s"
-                        )
+                        backward_relation_name = m2m_object.related_name = f"{model._meta.db_table}s"
                     if backward_relation_name in related_model._meta.fields:
-                        raise ConfigurationError(
-                            f'backward relation "{backward_relation_name}" duplicates in'
-                            f" model {related_model_name}"
-                        )
+                        raise ConfigurationError(f'backward relation "{backward_relation_name}" duplicates in model {related_model_name}')
 
                     if not m2m_object.through:
-                        related_model_table_name = (
-                            related_model._meta.db_table or related_model.__name__.lower()
-                        )
+                        related_model_table_name = related_model._meta.db_table or related_model.__name__.lower()
                         m2m_object.through = f"{model._meta.db_table}_{related_model_table_name}"
 
                     m2m_relation = ManyToManyFieldInstance(
@@ -344,11 +308,7 @@ class Tortoise:
             try:
                 connections.get(info.get("default_connection", "default"))
             except KeyError:
-                raise ConfigurationError(
-                    'Unknown connection "{}" for app "{}"'.format(
-                        info.get("default_connection", "default"), name
-                    )
-                )
+                raise ConfigurationError('Unknown connection "{}" for app "{}"'.format(info.get("default_connection", "default"), name))
 
             cls.init_models(info["models"], name, _init_relations=False)
 
@@ -371,9 +331,7 @@ class Tortoise:
             with open(config_file) as f:
                 config = json.load(f)
         else:
-            raise ConfigurationError(
-                f"Unknown config extension {extension}, only .yml and .json are supported"
-            )
+            raise ConfigurationError(f"Unknown config extension {extension}, only .yml and .json are supported")
         return config
 
     @classmethod
@@ -384,9 +342,7 @@ class Tortoise:
                 model._meta.basetable = Table(name=model._meta.db_table, schema=model._meta.schema)
                 basequery = model._meta.db.query_class.from_(model._meta.basetable)
                 model._meta.basequery = cast(Query, basequery)
-                model._meta.basequery_all_fields = cast(
-                    Query, basequery.select(*model._meta.db_fields)
-                )
+                model._meta.basequery_all_fields = cast(Query, basequery.select(*model._meta.db_fields))
 
     @classmethod
     async def init(
@@ -402,7 +358,7 @@ class Tortoise:
         table_name_generator: Callable[[type[Model]], str] | None = None,
     ) -> None:
         """
-        Sets up Tortoise-ORM: loads apps and models, configures database connections but does not
+        Sets up tortoise-plus: loads apps and models, configures database connections but does not
         connect to the database yet. The actual connection or connection pool is established
         lazily on first query execution.
 
@@ -471,9 +427,7 @@ class Tortoise:
         if cls._inited:
             await connections.close_all(discard=True)
         if int(bool(config) + bool(config_file) + bool(db_url)) != 1:
-            raise ConfigurationError(
-                'You should init either from "config", "config_file" or "db_url"'
-            )
+            raise ConfigurationError('You should init either from "config", "config_file" or "db_url"')
 
         if config_file:
             config = cls._get_config_from_config_file(config_file)
@@ -481,9 +435,10 @@ class Tortoise:
             if not modules:
                 raise ConfigurationError('You must specify "db_url" and "modules" together')
             config = generate_config(db_url, modules)
+
         elif config is None:
             raise ConfigurationError('You must specify "config" or "config_file" or "db_url"')
-
+        print(config)
         try:
             connections_config = config["connections"]
         except KeyError:
@@ -503,7 +458,7 @@ class Tortoise:
         if logger.isEnabledFor(logging.DEBUG):
             str_connection_config = cls.star_password(connections_config)
             logger.debug(
-                "Tortoise-ORM startup\n    connections: %s\n    apps: %s",
+                "tortoise-plus startup\n    connections: %s\n    apps: %s",
                 str_connection_config,
                 str(apps_config),
             )
@@ -567,7 +522,7 @@ class Tortoise:
            :meth:`connections.close_all<tortoise.connection.ConnectionHandler.close_all>` instead.
         """
         await connections.close_all()
-        logger.info("Tortoise-ORM shutdown")
+        logger.info("tortoise-plus shutdown")
 
     @classmethod
     async def _reset_apps(cls) -> None:
@@ -645,7 +600,7 @@ def run_async(coro: Coroutine) -> None:
         loop.run_until_complete(connections.close_all(discard=True))
 
 
-__version__ = importlib_metadata.version("tortoise-orm")
+__version__ = importlib_metadata.version("tortoise-plus")
 
 __all__ = [
     "Model",

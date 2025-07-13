@@ -24,7 +24,7 @@ Quick Start
     Options:
       -V, --version      Show the version and exit.
       -c, --config TEXT  Config file.  [default: pyproject.toml]
-      --app TEXT         Tortoise-ORM app name.
+      --app TEXT         tortoise-plus app name.
       -h, --help         Show this message and exit.
 
     Commands:
@@ -33,7 +33,7 @@ Quick Start
       history    List all migrations.
       init       Initialize aerich config and create migrations folder.
       init-db    Generate schema and generate app migration folder.
-      inspectdb  Prints the current database tables to stdout as Tortoise-ORM...
+      inspectdb  Prints the current database tables to stdout as tortoise-plus...
       migrate    Generate a migration file for the current state of the models.
       upgrade    Upgrade to specified migration version.
 
@@ -41,7 +41,7 @@ Quick Start
 Usage
 =====
 
-Add ``aerich.models`` to your `Tortoise-ORM` config first:
+Add ``aerich.models`` to your `tortoise-plus` config first:
 
 .. code-block:: python3
 
@@ -67,7 +67,7 @@ Initialization
       Initialize aerich config and create migrations folder.
 
     Options:
-      -t, --tortoise-orm TEXT  Tortoise-ORM config dict location, like
+      -t, --tortoise-plus TEXT  tortoise-plus config dict location, like
                               `settings.TORTOISE_ORM`.  [required]
       --location TEXT          Migrations folder.  [default: ./migrations]
       -s, --src_folder TEXT    Folder of the source, relative to the project root.
@@ -95,7 +95,7 @@ Init db
     Success generate schema for app "models"
 
 
-If your Tortoise-ORM app is not default `models`, you must specify
+If your tortoise-plus app is not default `models`, you must specify
 `--app` like `aerich --app other_models init-db`.
 
 Update models and make migrate

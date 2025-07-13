@@ -1,7 +1,7 @@
-Tortoise-ORM BlackSheep example
+tortoise-plus BlackSheep example
 ============================
 
-We have a lightweight integration util ``tortoise.contrib.blacksheep`` which has a single function ``register_tortoise`` which sets up Tortoise-ORM on startup and cleans up on teardown.
+We have a lightweight integration util ``tortoise.contrib.blacksheep`` which has a single function ``register_tortoise`` which sets up tortoise-plus on startup and cleans up on teardown.
 
 Usage
 -----

@@ -47,7 +47,7 @@ Fixed
 ^^^^^
 - Fix model with multi m2m fields generates wrong references name (#1897)
 - Fix using reserved words in order_by (#1900)
-- Fix installing tortoise-orm with poetry 2 (#1885)
+- Fix installing tortoise-plus with poetry 2 (#1885)
 
 Changed
 ^^^^^^^
@@ -345,7 +345,7 @@ Added
 ^^^^^
 - Added psycopg backend support.
 - Added a new unified and robust connection management interface to access DB connections which includes support for
-  lazy connection creation and much more. For more details, check out this `PR <https://github.com/tortoise/tortoise-orm/pull/1001>`_
+  lazy connection creation and much more. For more details, check out this `PR <https://github.com/tortoise/tortoise-plus/pull/1001>`_
 - Added `TimeField`. (#1054)
 - Added `ArrayField`.
 Fixed
@@ -511,7 +511,7 @@ Changed
 -------
 - Support custom function in update. (#537)
 - Add `Model.refresh_from_db`. (#549)
-- Add timezone support, **be careful to upgrade to this version**, see `docs <https://tortoise-orm.readthedocs.io/en/latest/timezone.html>`_ for details. (#335)
+- Add timezone support, **be careful to upgrade to this version**, see `docs <https://tortoise-plus.readthedocs.io/en/latest/timezone.html>`_ for details. (#335)
 - Remove `aerich` in case of cyclic dependency. (#558)
 
 0.16.17
@@ -546,7 +546,7 @@ Changed
 
 0.16.13
 -------
-- Default install of ``tortoise-orm`` now installs with no C-dependencies, if you want to use the C accelerators, please do a ``pip install tortoise-orm[accel]`` instead.
+- Default install of ``tortoise-plus`` now installs with no C-dependencies, if you want to use the C accelerators, please do a ``pip install tortoise-plus[accel]`` instead.
 - Added ``<instance>.clone()`` method that will create a cloned instance in memory. To persist it you still need to call ``.save()``
 - ``.clone()`` will raise a ``ParamsError`` if tortoise can't generate a primary key. In that case do a ``.clone(pk=<newval>)``
 - If manually setting the primary key value to ``None`` and the primary key can be automatically generated, this will create a new record. We however still recommend the ``.clone()`` method instead.
@@ -792,7 +792,7 @@ Removals:
 - Removed ``start_transaction`` as it has been broken since 0.15.0
 - Removed support for Python 3.6 / PyPy-3.6, as it has been broken since 0.15.0
 
-  If you still need Python 3.6 support, you can install ``tortoise-orm<0.16`` as we will still backport critical bugfixes to the 0.15 branch for a while.
+  If you still need Python 3.6 support, you can install ``tortoise-plus<0.16`` as we will still backport critical bugfixes to the 0.15 branch for a while.
 
 .. rst-class:: emphasize-children
 
@@ -1096,7 +1096,7 @@ Breaking Changes:
 
 0.13.3
 ------
-- Fixed installing Tortoise-ORM in non-unicode systems. (#180)
+- Fixed installing tortoise-plus in non-unicode systems. (#180)
 - ``«queryset».update(…)`` now correctly uses the DB-specific ``to_db_value()``
 - ``fetch_related(…)`` now correctly encodes non-integer keys.
 - ``ForeignKey`` fields of type ``UUIDField`` are now escaped consistently.

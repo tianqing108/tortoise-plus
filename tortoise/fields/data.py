@@ -97,6 +97,9 @@ class IntField(Field[int], int):
     class _db_sqlite:
         GENERATED_SQL = "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL"
 
+    class _db_sqlcipher:
+        GENERATED_SQL = "INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL"
+
     class _db_mysql:
         GENERATED_SQL = "INT NOT NULL PRIMARY KEY AUTO_INCREMENT"
 
@@ -228,9 +231,7 @@ class TextField(Field[str], str):  # type: ignore
                 stacklevel=2,
             )
         if unique:
-            raise ConfigurationError(
-                "TextField doesn't support unique indexes, consider CharField or another strategy"
-            )
+            raise ConfigurationError("TextField doesn't support unique indexes, consider CharField or another strategy")
         if db_index or kwargs.get("index"):
             raise ConfigurationError("TextField can't be indexed, consider CharField")
 
@@ -256,6 +257,9 @@ class BooleanField(Field[bool]):
     SQL_TYPE = "BOOL"
 
     class _db_sqlite:
+        SQL_TYPE = "INT"
+
+    class _db_sqlcipher:
         SQL_TYPE = "INT"
 
     class _db_mssql:
@@ -304,14 +308,18 @@ class DecimalField(Field[Decimal], Decimal):
         def function_cast(self, term: Term) -> Term:
             return functions.Cast(term, SqlTypes.NUMERIC)
 
+    class _db_sqlcipher:
+        SQL_TYPE = "VARCHAR(40)"
+
+        def function_cast(self, term: Term) -> Term:
+            return functions.Cast(term, SqlTypes.NUMERIC)
+
 
 # In case of queryset with filter `__year`/`__month`/`__day` ..., value can be int, float or str. Example:
 # `await MyModel.filter(created_at__year=2024)`
 # `await MyModel.filter(created_at__year=2024.0)`
 # `await MyModel.filter(created_at__year='2024')`
-DatetimeFieldQueryValueType = TypeVar(
-    "DatetimeFieldQueryValueType", datetime.datetime, int, float, str
-)
+DatetimeFieldQueryValueType = TypeVar("DatetimeFieldQueryValueType", datetime.datetime, int, float, str)
 
 
 class DatetimeField(Field[datetime.datetime], datetime.datetime):
@@ -362,14 +370,9 @@ class DatetimeField(Field[datetime.datetime], datetime.datetime):
                 value = localtime(value)
         return value
 
-    def to_db_value(
-        self, value: DatetimeFieldQueryValueType | None, instance: type[Model] | Model
-    ) -> DatetimeFieldQueryValueType | None:
+    def to_db_value(self, value: DatetimeFieldQueryValueType | None, instance: type[Model] | Model) -> DatetimeFieldQueryValueType | None:
         # Only do this if it is a Model instance, not class. Test for guaranteed instance var
-        if hasattr(instance, "_saved_in_db") and (
-            self.auto_now
-            or (self.auto_now_add and getattr(instance, self.model_field_name) is None)
-        ):
+        if hasattr(instance, "_saved_in_db") and (self.auto_now or (self.auto_now_add and getattr(instance, self.model_field_name) is None)):
             now = timezone.now()
             setattr(instance, self.model_field_name, now)
             return now  # type:ignore[return-value]
@@ -377,8 +380,7 @@ class DatetimeField(Field[datetime.datetime], datetime.datetime):
             if isinstance(value, datetime.datetime) and get_use_tz():
                 if timezone.is_naive(value):
                     warnings.warn(
-                        f"DateTimeField {self.model_field_name} received a naive datetime ({value})"
-                        " while time zone support is active.",
+                        f"DateTimeField {self.model_field_name} received a naive datetime ({value}) while time zone support is active.",
                         RuntimeWarning,
                     )
                     value = timezone.make_aware(value, "UTC")
@@ -412,9 +414,7 @@ class DateField(Field[datetime.date], datetime.date):
             value = parse_datetime(value).date()
         return value
 
-    def to_db_value(
-        self, value: datetime.date | str | None, instance: type[Model] | Model
-    ) -> datetime.date | None:
+    def to_db_value(self, value: datetime.date | str | None, instance: type[Model] | Model) -> datetime.date | None:
         if value is not None and not isinstance(value, datetime.date):
             value = parse_datetime(value).date()
         self.validate(value)
@@ -455,10 +455,7 @@ class TimeField(Field[datetime.time], datetime.time):
         instance: type[Model] | Model,
     ) -> datetime.time | datetime.timedelta | None:
         # Only do this if it is a Model instance, not class. Test for guaranteed instance var
-        if hasattr(instance, "_saved_in_db") and (
-            self.auto_now
-            or (self.auto_now_add and getattr(instance, self.model_field_name) is None)
-        ):
+        if hasattr(instance, "_saved_in_db") and (self.auto_now or (self.auto_now_add and getattr(instance, self.model_field_name) is None)):
             now = timezone.now().time()
             setattr(instance, self.model_field_name, now)
             return now
@@ -468,8 +465,7 @@ class TimeField(Field[datetime.time], datetime.time):
             if get_use_tz():
                 if timezone.is_naive(value):
                     warnings.warn(
-                        f"TimeField {self.model_field_name} received a naive time ({value})"
-                        " while time zone support is active.",
+                        f"TimeField {self.model_field_name} received a naive time ({value}) while time zone support is active.",
                         RuntimeWarning,
                     )
                     value = value.replace(tzinfo=get_default_timezone())
@@ -499,9 +495,7 @@ class TimeDeltaField(Field[datetime.timedelta]):
             return value
         return datetime.timedelta(microseconds=value)
 
-    def to_db_value(
-        self, value: datetime.timedelta | None, instance: type[Model] | Model
-    ) -> int | None:
+    def to_db_value(self, value: datetime.timedelta | None, instance: type[Model] | Model) -> int | None:
         self.validate(value)
 
         if value is None:
@@ -517,6 +511,9 @@ class FloatField(Field[float], float):
     SQL_TYPE = "DOUBLE PRECISION"
 
     class _db_sqlite:
+        SQL_TYPE = "REAL"
+
+    class _db_sqlcipher:
         SQL_TYPE = "REAL"
 
     class _db_mysql:
@@ -599,9 +596,7 @@ class JSONField(Field[T], dict, list):  # type: ignore
 
         return self.encoder(value)
 
-    def to_python_value(
-        self, value: T | str | bytes | dict | list | None
-    ) -> T | dict | list | None:
+    def to_python_value(self, value: T | str | bytes | dict | list | None) -> T | dict | list | None:
         if isinstance(value, (str, bytes)):
             try:
                 data = self.decoder(value)
@@ -616,9 +611,7 @@ class JSONField(Field[T], dict, list):  # type: ignore
 
                 return data
             except Exception:
-                raise FieldError(
-                    f"Value {value if isinstance(value, str) else value.decode()} is invalid json value."
-                )
+                raise FieldError(f"Value {value if isinstance(value, str) else value.decode()} is invalid json value.")
 
         return value
 
@@ -688,9 +681,7 @@ class IntEnumFieldInstance(SmallIntField):
             except ValueError:
                 raise ConfigurationError("IntEnumField only supports integer enums!")
             if not minimum <= value < 32768:
-                raise ConfigurationError(
-                    f"The valid range of IntEnumField's values is {minimum}..32767!"
-                )
+                raise ConfigurationError(f"The valid range of IntEnumField's values is {minimum}..32767!")
 
         # Automatic description for the field if not specified by the user
         if description is None:

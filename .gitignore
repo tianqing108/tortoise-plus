@@ -110,3 +110,4 @@ ENV/
 
 # macos
 .DS_Store
+tests/test.db*

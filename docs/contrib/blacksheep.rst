@@ -1,10 +1,10 @@
 .. _contrib_blacksheep:
 
 ===================================
-Tortoise-ORM BlackSheep integration
+tortoise-plus BlackSheep integration
 ===================================
 
-We have a lightweight integration util ``tortoise.contrib.blacksheep`` which has a single function ``register_tortoise`` which sets up Tortoise-ORM on startup and cleans up on teardown.
+We have a lightweight integration util ``tortoise.contrib.blacksheep`` which has a single function ``register_tortoise`` which sets up tortoise-plus on startup and cleans up on teardown.
 
 BlackSheep is an asynchronous web framework to build event based web applications with Python.
 

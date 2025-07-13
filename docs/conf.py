@@ -34,7 +34,7 @@ author = "Andrey Bondar & Nickolas Grigoriadis & long2ice"
 
 
 # The short X.Y version
-version = importlib_metadata.version("tortoise-orm")
+version = importlib_metadata.version("tortoise-plus")
 # The full version, including alpha/beta/rc tags
 release = version
 
@@ -130,8 +130,8 @@ def get_version_info():
 
 html_theme_options = {
     "google_analytics": ["G-MJ7RHW2FRB", "auto"],
-    "repo_url": "https://github.com/tortoise/tortoise-orm",
-    "repo_name": "tortoise-orm",
+    "repo_url": "https://github.com/tortoise/tortoise-plus",
+    "repo_name": "tortoise-plus",
     "globaltoc_collapse": True,
     "globaltoc_includehidden": True,
     "icon": {
@@ -205,9 +205,7 @@ html_static_path = ["_static"]
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-html_sidebars = {
-    "**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]
-}
+html_sidebars = {"**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]}
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

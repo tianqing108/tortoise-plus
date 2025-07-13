@@ -2875,7 +2875,7 @@ files = [
 [[package]]
 name = "pypika-tortoise"
 version = "0.6.1"
-description = "Forked from pypika and streamline just for tortoise-orm"
+description = "Forked from pypika and streamline just for tortoise-plus"
 optional = false
 python-versions = ">=3.9"
 groups = ["main"]

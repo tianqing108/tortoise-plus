@@ -19,7 +19,7 @@ def register_tortoise(
 ) -> None:
     """
     Registers ``before_server_start`` and ``after_server_stop`` hooks to set-up and tear-down
-    Tortoise-ORM inside a Sanic webserver.
+    tortoise-plus inside a Sanic webserver.
 
     You can configure using only one of ``config``, ``config_file``
     and ``(db_url, modules)``.
@@ -81,14 +81,14 @@ def register_tortoise(
 
     async def tortoise_init() -> None:
         await Tortoise.init(config=config, config_file=config_file, db_url=db_url, modules=modules)
-        logger.info("Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps)  # pylint: disable=W0212
+        logger.info("tortoise-plus started, %s, %s", connections._get_storage(), Tortoise.apps)  # pylint: disable=W0212
 
     if generate_schemas:
 
         @app.main_process_start
         async def init_orm_main(app):  # pylint: disable=W0612
             await tortoise_init()
-            logger.info("Tortoise-ORM generating schema")
+            logger.info("tortoise-plus generating schema")
             await Tortoise.generate_schemas()
 
     @app.before_server_start
@@ -101,4 +101,4 @@ def register_tortoise(
     @app.after_server_stop
     async def close_orm(app):  # pylint: disable=W0612
         await connections.close_all()
-        logger.info("Tortoise-ORM shutdown")
+        logger.info("tortoise-plus shutdown")

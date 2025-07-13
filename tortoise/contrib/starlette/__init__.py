@@ -18,7 +18,7 @@ def register_tortoise(
     generate_schemas: bool = False,
 ) -> None:
     """
-    Registers ``startup`` and ``shutdown`` events to set-up and tear-down Tortoise-ORM
+    Registers ``startup`` and ``shutdown`` events to set-up and tear-down tortoise-plus
     inside a Starlette application.
 
     You can configure using only one of ``config``, ``config_file``
@@ -82,12 +82,12 @@ def register_tortoise(
     @app.on_event("startup")
     async def init_orm() -> None:  # pylint: disable=W0612
         await Tortoise.init(config=config, config_file=config_file, db_url=db_url, modules=modules)
-        logger.info("Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps)
+        logger.info("tortoise-plus started, %s, %s", connections._get_storage(), Tortoise.apps)
         if generate_schemas:
-            logger.info("Tortoise-ORM generating schema")
+            logger.info("tortoise-plus generating schema")
             await Tortoise.generate_schemas()
 
     @app.on_event("shutdown")
     async def close_orm() -> None:  # pylint: disable=W0612
         await connections.close_all()
-        logger.info("Tortoise-ORM shutdown")
+        logger.info("tortoise-plus shutdown")

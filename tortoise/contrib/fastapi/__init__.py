@@ -41,7 +41,7 @@ def tortoise_exception_handlers() -> dict:
 
 class RegisterTortoise(AbstractAsyncContextManager):
     """
-    Registers Tortoise-ORM with set-up and tear-down
+    Registers tortoise-plus with set-up and tear-down
     inside a FastAPI application's lifespan.
 
     You can configure using only one of ``config``, ``config_file``
@@ -160,15 +160,15 @@ class RegisterTortoise(AbstractAsyncContextManager):
             timezone=self.timezone,
             _create_db=self._create_db,
         )
-        logger.info("Tortoise-ORM started, %s, %s", connections._get_storage(), Tortoise.apps)
+        logger.info("tortoise-plus started, %s, %s", connections._get_storage(), Tortoise.apps)
         if self.generate_schemas:
-            logger.info("Tortoise-ORM generating schema")
+            logger.info("tortoise-plus generating schema")
             await Tortoise.generate_schemas()
 
     @staticmethod
     async def close_orm() -> None:  # pylint: disable=W0612
         await connections.close_all()
-        logger.info("Tortoise-ORM shutdown")
+        logger.info("tortoise-plus shutdown")
 
     def __call__(self, *args, **kwargs) -> Self:
         return self
@@ -197,7 +197,7 @@ def register_tortoise(
     add_exception_handlers: bool = False,
 ) -> None:
     """
-    Registers Tortoise-ORM with set-up at the beginning of FastAPI application's lifespan
+    Registers tortoise-plus with set-up at the beginning of FastAPI application's lifespan
     (which allow user to read/write data from/to db inside the lifespan function),
     and tear-down at the end of that lifespan.
 
@@ -264,7 +264,7 @@ def register_tortoise(
     from fastapi.routing import _merge_lifespan_context
 
     # Leave this function here to compare with old versions
-    # So people can upgrade tortoise-orm in running project without changing any code
+    # So people can upgrade tortoise-plus in running project without changing any code
 
     @asynccontextmanager
     async def orm_lifespan(app_instance: FastAPI):
